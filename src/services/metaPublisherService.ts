@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { appConfig } from '../config/appConfig';
 import { SocialMediaContent, SocialMediaPlatform } from '../types/domain';
 import { logger } from '../utils/logger';
-import { appConfig } from '../config/appConfig';
 
 export interface MetaPublishResult {
   success: boolean;

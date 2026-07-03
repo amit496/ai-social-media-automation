@@ -1,7 +1,7 @@
 import { SocialMediaContent, SocialMediaPlatform, PublishedPost, ScheduledPost } from '../types/domain';
 import { logger } from '../utils/logger';
-import { storageService } from './storageService';
 import { metaPublisherService } from './metaPublisherService';
+import { mongoStorageService } from './mongoStorageService';
 
 export default class PublisherService {
   public async publishContent(
@@ -24,7 +24,8 @@ export default class PublisherService {
       publishMessage: publishResult.message,
     };
 
-    return storageService.savePublishedPost(publishedPost);
+    await mongoStorageService.savePublishedPost(publishedPost);
+    return publishedPost;
   }
 
   public async scheduleContent(
@@ -34,7 +35,7 @@ export default class PublisherService {
     scheduledFor: string,
   ): Promise<ScheduledPost> {
     logger.info(`Scheduling content for ${platform} at ${scheduledFor} for topic: ${topic}`);
-    return storageService.saveScheduledPost({
+    return mongoStorageService.saveScheduledPost({
       topic,
       content,
       platform,
@@ -42,11 +43,11 @@ export default class PublisherService {
     });
   }
 
-  public getPublishedPosts(): PublishedPost[] {
-    return storageService.getPublishedPosts();
+  public async getPublishedPosts(): Promise<PublishedPost[]> {
+    return mongoStorageService.getPublishedPosts();
   }
 
-  public getScheduledPosts(): ScheduledPost[] {
-    return storageService.getScheduledPosts();
+  public async getScheduledPosts(): Promise<ScheduledPost[]> {
+    return mongoStorageService.getScheduledPosts();
   }
 }

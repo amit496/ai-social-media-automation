@@ -1,6 +1,6 @@
 import express from 'express';
-import { getTrendingTopics, getBestTopic, getHealth, generateContent } from '../controllers/trendingController';
 import { publishContent, getPublishedPosts, getScheduledPosts } from '../controllers/publisherController';
+import { getTrendingTopics, getBestTopic, getHealth, generateContent } from '../controllers/trendingController';
 import { validateGeneratePayload, validatePublishPayload } from '../middleware/requestValidation';
 
 const router = express.Router();

@@ -1,10 +1,11 @@
 import express, { Express } from 'express';
 import { appConfig } from './config/appConfig';
-import trendingRoutes from './routes/trendingRoutes';
+import { connectMongo } from './config/mongo';
 import { errorMiddleware } from './middleware/errorMiddleware';
 import { notFoundMiddleware } from './middleware/notFoundMiddleware';
-import { logger } from './utils/logger';
+import trendingRoutes from './routes/trendingRoutes';
 import { schedulerService } from './services/schedulerService';
+import { logger } from './utils/logger';
 
 const app: Express = express();
 const port = appConfig.port;
@@ -14,12 +15,21 @@ app.use('/api', trendingRoutes);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
-app.listen(port, () => {
-  logger.info(`AI Social Media Automation API running on http://localhost:${port}`);
+const startServer = async (): Promise<void> => {
+  await connectMongo();
 
-  setInterval(() => {
-    schedulerService.runPendingScheduledPosts().catch((err) => {
-      logger.error(`Scheduled post runner failed: ${err.message}`);
-    });
-  }, 60_000);
+  app.listen(port, () => {
+    logger.info(`AI Social Media Automation API running on http://localhost:${port}`);
+
+    setInterval(() => {
+      schedulerService.runPendingScheduledPosts().catch((err) => {
+        logger.error(`Scheduled post runner failed: ${err.message}`);
+      });
+    }, 60_000);
+  });
+};
+
+startServer().catch((err) => {
+  logger.error(`Server failed to start: ${err.message}`);
+  process.exit(1);
 });

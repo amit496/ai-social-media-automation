@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import PublisherService from '../services/publisherService';
 import AIGeneratorService from '../services/aiGeneratorService';
+import PublisherService from '../services/publisherService';
 import { ApiResponse } from '../types/api';
 import { SocialMediaPlatform } from '../types/domain';
 

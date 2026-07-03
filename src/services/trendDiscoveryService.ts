@@ -1,10 +1,10 @@
-import { TrendProvider } from '../providers/provider';
-import { TrendingTopic } from '../types/domain';
-import HackerNewsProvider from '../providers/hackerNewsProvider';
-import RedditProvider from '../providers/redditProvider';
-import GitHubTrendingProvider from '../providers/githubTrendingProvider';
 import DevToProvider from '../providers/devToProvider';
+import GitHubTrendingProvider from '../providers/githubTrendingProvider';
+import HackerNewsProvider from '../providers/hackerNewsProvider';
+import { TrendProvider } from '../providers/provider';
+import RedditProvider from '../providers/redditProvider';
 import TechNewsProvider from '../providers/techNewsProvider';
+import { TrendingTopic } from '../types/domain';
 
 export default class TrendDiscoveryService {
   private readonly providers: TrendProvider[];

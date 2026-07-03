@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { BaseProvider } from './baseProvider';
 import { TrendingTopic } from '../types/domain';
+import { BaseProvider } from './baseProvider';
 
 const devToUrl = 'https://dev.to/api/articles?top=1&page=1&per_page=12';
 

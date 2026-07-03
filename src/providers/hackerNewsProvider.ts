@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { load } from 'cheerio';
-import { BaseProvider } from './baseProvider';
 import { TrendingTopic } from '../types/domain';
+import { BaseProvider } from './baseProvider';
 
 const hackerNewsUrl = 'https://news.ycombinator.com/';
 

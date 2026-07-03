@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import TrendDiscoveryService from '../services/trendDiscoveryService';
-import TopicSelectorService from '../services/topicSelectorService';
 import AIGeneratorService from '../services/aiGeneratorService';
+import TopicSelectorService from '../services/topicSelectorService';
+import TrendDiscoveryService from '../services/trendDiscoveryService';
 import { ApiResponse, SuccessResponse } from '../types/api';
 import { SelectedTopic, SocialMediaContent, TrendingTopic } from '../types/domain';
 

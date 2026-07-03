@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { SocialMediaContent } from '../types/domain';
 import { appConfig } from '../config/appConfig';
+import { SocialMediaContent } from '../types/domain';
 import { logger } from '../utils/logger';
 
 export default class AIGeneratorService {

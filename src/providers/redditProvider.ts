@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { BaseProvider } from './baseProvider';
 import { TrendingTopic } from '../types/domain';
+import { BaseProvider } from './baseProvider';
 
 const redditUrl = 'https://www.reddit.com/r/programming/top.json?t=day&limit=12';
 
