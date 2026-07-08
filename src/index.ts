@@ -7,16 +7,22 @@ import trendingRoutes from './routes/trendingRoutes';
 import { schedulerService } from './services/schedulerService';
 import { logger } from './utils/logger';
 
-const app: Express = express();
-const port = appConfig.port;
+export const createApp = (): Express => {
+  const app: Express = express();
 
-app.use(express.json());
-app.use('/api', trendingRoutes);
-app.use(notFoundMiddleware);
-app.use(errorMiddleware);
+  app.use(express.json());
+  app.use('/api', trendingRoutes);
+  app.use(notFoundMiddleware);
+  app.use(errorMiddleware);
 
-const startServer = async (): Promise<void> => {
+  return app;
+};
+
+export const startServer = async (): Promise<void> => {
   await connectMongo();
+
+  const app = createApp();
+  const port = appConfig.port;
 
   app.listen(port, () => {
     logger.info(`AI Social Media Automation API running on http://localhost:${port}`);
@@ -29,7 +35,9 @@ const startServer = async (): Promise<void> => {
   });
 };
 
-startServer().catch((err) => {
-  logger.error(`Server failed to start: ${err.message}`);
-  process.exit(1);
-});
+if (require.main === module) {
+  startServer().catch((err) => {
+    logger.error(`Server failed to start: ${err.message}`);
+    process.exit(1);
+  });
+}

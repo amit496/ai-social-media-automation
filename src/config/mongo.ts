@@ -2,14 +2,29 @@ import mongoose from 'mongoose';
 import { appConfig } from './appConfig';
 import { logger } from '../utils/logger';
 
+let mongoConnectionAttempted = false;
+
 export const connectMongo = async (): Promise<void> => {
-  if (!appConfig.mongodbUri) {
-    throw new Error('MONGODB_URI is required');
+  if (mongoConnectionAttempted) {
+    return;
   }
 
-  await mongoose.connect(appConfig.mongodbUri, {
-    dbName: 'ai_social_media_automation',
-  });
+  mongoConnectionAttempted = true;
 
-  logger.info('Connected to MongoDB');
+  if (!appConfig.mongodbUri) {
+    logger.warn('MONGODB_URI not configured; continuing without MongoDB');
+    return;
+  }
+
+  try {
+    await mongoose.connect(appConfig.mongodbUri, {
+      dbName: 'ai_social_media_automation',
+    });
+
+    logger.info('Connected to MongoDB');
+  } catch (error) {
+    logger.warn(`MongoDB connection skipped: ${(error as Error).message}`);
+  }
 };
+
+export const isMongoAvailable = (): boolean => mongoose.connection.readyState === 1;

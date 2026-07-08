@@ -8,12 +8,14 @@ export default class AIGeneratorService {
 
   constructor() {
     this.apiKey = appConfig.geminiApiKey;
-    if (!this.apiKey) {
-      throw new Error('GEMINI_API_KEY is required');
-    }
   }
 
   public async generateSocialMediaContent(topic: string): Promise<SocialMediaContent> {
+    if (!this.apiKey) {
+      logger.warn('GEMINI_API_KEY not configured; using fallback content');
+      return this.buildFallbackContent(topic);
+    }
+
     const prompt = this.buildPrompt(topic);
     const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.apiKey}`;
 
