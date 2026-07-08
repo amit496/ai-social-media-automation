@@ -18,32 +18,44 @@ export class MongoStorageService {
   }
 
   public async savePublishedPost(post: PublishedPost): Promise<PublishedPost> {
-    if (!this.isMongoReady()) {
+    const mongoReady = this.isMongoReady();
+    logger.info(`[DEBUG] savePublishedPost - MongoDB Ready: ${mongoReady}, URI: ${appConfig.mongodbUri ? 'set' : 'not set'}, Connection State: ${mongoose.connection.readyState}`);
+
+    if (!mongoReady) {
       this.inMemoryPublishedPosts.push(post);
-      logger.warn('MongoDB not available; saved published post in memory');
+      logger.warn(`[DEBUG] MongoDB not available; saved to in-memory. In-memory count: ${this.inMemoryPublishedPosts.length}`);
       return post;
     }
 
     try {
       const publishedPost = new PublishedPostModel(post);
       await publishedPost.save();
+      logger.info(`[DEBUG] Successfully saved to MongoDB: ${post.id}`);
       return post;
     } catch (error) {
-      logger.warn(`MongoDB publish save failed; using in-memory fallback: ${(error as Error).message}`);
+      logger.warn(`[DEBUG] MongoDB publish save failed; using in-memory fallback: ${(error as Error).message}`);
       this.inMemoryPublishedPosts.push(post);
+      logger.warn(`[DEBUG] In-memory count after fallback: ${this.inMemoryPublishedPosts.length}`);
       return post;
     }
   }
 
   public async getPublishedPosts(): Promise<PublishedPost[]> {
-    if (!this.isMongoReady()) {
+    const mongoReady = this.isMongoReady();
+    logger.info(`[DEBUG] getPublishedPosts - MongoDB Ready: ${mongoReady}, Connection State: ${mongoose.connection.readyState}`);
+
+    if (!mongoReady) {
+      logger.info(`[DEBUG] Returning in-memory posts: ${this.inMemoryPublishedPosts.length} posts`);
       return this.inMemoryPublishedPosts;
     }
 
     try {
-      return PublishedPostModel.find().lean();
+      const posts = await PublishedPostModel.find().lean();
+      logger.info(`[DEBUG] MongoDB find() returned: ${posts.length} posts`);
+      return posts;
     } catch (error) {
-      logger.warn(`MongoDB published posts read failed: ${(error as Error).message}`);
+      logger.warn(`[DEBUG] MongoDB published posts read failed: ${(error as Error).message}`);
+      logger.info(`[DEBUG] Falling back to in-memory: ${this.inMemoryPublishedPosts.length} posts`);
       return this.inMemoryPublishedPosts;
     }
   }
@@ -80,7 +92,7 @@ export class MongoStorageService {
     }
 
     try {
-      return ScheduledPostModel.find().lean();
+      return await ScheduledPostModel.find().lean();
     } catch (error) {
       logger.warn(`MongoDB scheduled posts read failed: ${(error as Error).message}`);
       return this.inMemoryScheduledPosts;
@@ -93,7 +105,7 @@ export class MongoStorageService {
     }
 
     try {
-      return ScheduledPostModel.find({ status: 'scheduled' }).lean();
+      return await ScheduledPostModel.find({ status: 'scheduled' }).lean();
     } catch (error) {
       logger.warn(`MongoDB pending scheduled posts read failed: ${(error as Error).message}`);
       return this.inMemoryScheduledPosts.filter((post) => post.status === 'scheduled');

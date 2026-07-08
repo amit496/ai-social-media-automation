@@ -36,9 +36,11 @@ export const publishContent = async (req: Request, res: Response): Promise<Respo
 };
 
 export const getScheduledPosts = async (req: Request, res: Response): Promise<Response<ApiResponse<unknown>>> => {
-  return res.json({ success: true, data: publisherService.getScheduledPosts() });
+  const scheduledPosts = await publisherService.getScheduledPosts();
+  return res.json({ success: true, data: scheduledPosts });
 };
 
 export const getPublishedPosts = async (req: Request, res: Response): Promise<Response<ApiResponse<unknown>>> => {
-  return res.json({ success: true, data: publisherService.getPublishedPosts() });
+  const publishedPosts = await publisherService.getPublishedPosts();
+  return res.json({ success: true, data: publishedPosts });
 };
