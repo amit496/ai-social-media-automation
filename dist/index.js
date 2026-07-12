@@ -11,6 +11,7 @@ const errorMiddleware_1 = require("./middleware/errorMiddleware");
 const notFoundMiddleware_1 = require("./middleware/notFoundMiddleware");
 const trendingRoutes_1 = __importDefault(require("./routes/trendingRoutes"));
 const schedulerService_1 = require("./services/schedulerService");
+const autoPostService_1 = require("./services/autoPostService");
 const logger_1 = require("./utils/logger");
 const createApp = () => {
     const app = (0, express_1.default)();
@@ -32,6 +33,12 @@ const startServer = async () => {
                 logger_1.logger.error(`Scheduled post runner failed: ${err.message}`);
             });
         }, 60000);
+        if (appConfig_1.appConfig.autoPostEnabled) {
+            autoPostService_1.autoPostService.start();
+        }
+        else {
+            logger_1.logger.info('Auto-posting is disabled via AUTO_POST_ENABLED=false');
+        }
     });
 };
 exports.startServer = startServer;

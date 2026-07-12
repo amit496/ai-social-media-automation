@@ -5,6 +5,7 @@ import { errorMiddleware } from './middleware/errorMiddleware';
 import { notFoundMiddleware } from './middleware/notFoundMiddleware';
 import trendingRoutes from './routes/trendingRoutes';
 import { schedulerService } from './services/schedulerService';
+import { autoPostService } from './services/autoPostService';
 import { logger } from './utils/logger';
 
 export const createApp = (): Express => {
@@ -32,6 +33,12 @@ export const startServer = async (): Promise<void> => {
         logger.error(`Scheduled post runner failed: ${err.message}`);
       });
     }, 60_000);
+
+    if (appConfig.autoPostEnabled) {
+      autoPostService.start();
+    } else {
+      logger.info('Auto-posting is disabled via AUTO_POST_ENABLED=false');
+    }
   });
 };
 

@@ -10,4 +10,5 @@ export const appConfig = {
   metaPageId: process.env.META_PAGE_ID || '',
   metaInstagramAccountId: process.env.META_INSTAGRAM_ACCOUNT_ID || '',
   metaInstagramImageUrl: process.env.META_INSTAGRAM_IMAGE_URL || '',
+  autoPostEnabled: process.env.AUTO_POST_ENABLED !== 'false',
 };
